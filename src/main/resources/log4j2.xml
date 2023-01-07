@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration shutdownHook="disable" status="warn">
-  <Properties>
-    <Property name="isThreadContextMapInheritable">true</Property>
-    <Property name="stdPattern">%d{HH:mm:ss.SSS} [%-3level] %c{1}:%L [%t:%tid] - %msg%n</Property>
-    <Property name="logBasePath">${log4j:configParentLocation}/logs/</Property>
-  </Properties>
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="${stdPattern}"/>
-    </Console>
-    <RollingRandomAccessFile filePattern="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/default-%i.log.gz"
-      filename="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/default.log"
-      name="Rolling-default">
-      <PatternLayout pattern="${stdPattern}"/>
-      <Policies>
-        <SizeBasedTriggeringPolicy size="10 MB"/>
-      </Policies>
-    </RollingRandomAccessFile>
-    <Routing name="Routing">
-      <Routes pattern="$${ctx:logFilename}">
-
-        <!-- ThreadContext has no value for logFilename key. -->
-        <Route key="$${ctx:logFilename}">
-          <Async name="AsyncRollingRAFFile">
-            <AppenderRef ref="Rolling-default"/>
-          </Async>
-        </Route>
-        <!-- ThreadContext has a value for logFilename key. -->
-        <Route>
-          <RollingRandomAccessFile filePattern="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/${ctx:logFilename}-%i.log.gz"
-            filename="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/${ctx:logFilename}.log"
-            name="Rolling-${ctx:logFilename}">
+    <Properties>
+        <Property name="isThreadContextMapInheritable">true</Property>
+        <Property name="stdPattern">%d{HH:mm:ss.SSS} [%-3level] %c{1}:%L [%t:%tid] -
+            %msg%n
+        </Property>
+        <Property name="logBasePath">${log4j:configParentLocation}/logs/</Property>
+    </Properties>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="${stdPattern}"/>
+        </Console>
+        <RollingRandomAccessFile
+                filePattern="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/default-%i.log.gz"
+                filename="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/default.log"
+                name="Rolling-default">
             <PatternLayout pattern="${stdPattern}"/>
             <Policies>
-              <SizeBasedTriggeringPolicy size="10 MB"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
-          </RollingRandomAccessFile>
-        </Route>
-      </Routes>
-    </Routing>
-  </Appenders>
-  <Loggers>
-    <Root level="all">
-      <AppenderRef ref="Routing"/>
-      <AppenderRef level="error" ref="STDOUT"/>
-    </Root>
-  </Loggers>
+        </RollingRandomAccessFile>
+        <Routing name="Routing">
+            <Routes pattern="$${ctx:logFilename}">
+
+                <!-- ThreadContext has no value for logFilename key. -->
+                <Route key="$${ctx:logFilename}">
+                    <Async name="AsyncRollingRAFFile">
+                        <AppenderRef ref="Rolling-default"/>
+                    </Async>
+                </Route>
+                <!-- ThreadContext has a value for logFilename key. -->
+                <Route>
+                    <RollingRandomAccessFile
+                            filePattern="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/${ctx:logFilename}-%i.log.gz"
+                            filename="logs/${ctx:routeDir}/${date:yyyy-MM-dd}/${ctx:logFilename}.log"
+                            name="Rolling-${ctx:logFilename}">
+                        <PatternLayout pattern="${stdPattern}"/>
+                        <Policies>
+                            <SizeBasedTriggeringPolicy size="10 MB"/>
+                        </Policies>
+                    </RollingRandomAccessFile>
+                </Route>
+            </Routes>
+        </Routing>
+    </Appenders>
+    <Loggers>
+        <Root level="all">
+            <AppenderRef ref="Routing"/>
+            <AppenderRef level="error" ref="STDOUT"/>
+        </Root>
+    </Loggers>
 </Configuration>
